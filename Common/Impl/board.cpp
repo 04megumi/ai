@@ -16,20 +16,20 @@ namespace Common {
         return true;
     }
 
-    void Board::print(bool use_unicode)
-    {
-        std::cout << "   ";
+    void Board::print(bool use_unicode) {
+        std::cout << "  ";
         for (int i = 0; i < BOARD_SIZE; i++)
-            std::cout << std::setw(2) << i;
+            std::cout << std::setw(3) << i;
         for (int i = 0; i < BOARD_SIZE; i++) {
             std::cout << std::endl << std::setw(2) << i << " ";
+            unsigned char w = use_unicode ? 4 : 3;
             for (int j = 0; j < BOARD_SIZE; j++) {
                 if (grid_[i][j] == PointState::EMPTY)
-                    std::cout << (use_unicode ? "· " : "E ");
+                    std::cout << std::setw(w) << (use_unicode ? "· " : "  ");
                 else if (grid_[i][j] == PointState::BLACK)
-                    std::cout << (use_unicode ? "⚫ " : "B ");
+                    std::cout << std::setw(w) << (use_unicode ? " ⚫" : "B ");
                 else if (grid_[i][j] == PointState::WHITE)
-                    std::cout << (use_unicode ? "⚪ " : "W ");
+                    std::cout << std::setw(w) << (use_unicode ? " ⚪" : "W ");
             }
         }
     }
