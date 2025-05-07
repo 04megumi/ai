@@ -35,9 +35,28 @@ namespace Common {
          */
         void print(bool use_unicode);
 
+        /**
+         * @brief 获取游戏是否结束
+         */
+        bool isGameOver() const { return game_over_; };
+
+        /**
+         * @brief 获取是否是黑棋胜利
+         */
+        bool isBlackWin() const { return is_black_win_; };
+
+        /**
+         * @brief 每轮落子之后判断是否结束
+         * @param row 行坐标
+         * @param col 列坐标
+         */
+        void checkIsGameOver(int row, int col);
+
     private:
         std::array<std::array<PointState, BOARD_SIZE>, BOARD_SIZE> grid_; ///< 棋盘数据，二维数组表示每个格点状态
         bool is_black_turn_ = true; ///< 当前是否轮到黑子落子
+        bool game_over_ = false;
+        bool is_black_win_ = false; 
     };
 
 } // namespace Common
