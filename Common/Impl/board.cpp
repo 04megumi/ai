@@ -1,6 +1,7 @@
 #include "board.h"
 #include <iostream>
 #include <iomanip>
+#include <cstdlib> 
 
 namespace Common {
 
@@ -36,15 +37,56 @@ namespace Common {
     }
 
     void Board::checkIsGameOver(int row, int col) {
-        unsigned char dx=0, dy=0, count=1;
-        for(int i=0;i<4;i++) {
-            int rt = row, ct = col;
-            dx = i%2, dy=i/2, count=1;
-            if(!dx&&!dy) { dx=-1, dy=1; }
-            while(rt+dx>=0&&ct+dy>=0&&rt+dx<BOARD_SIZE&&ct+dy<BOARD_SIZE&&grid_[rt+dx][ct+dy]==(is_black_turn_?PointState::BLACK:PointState::WHITE)) { count++;rt+=dx,ct+=dy; }
-            rt = row, ct = col, dx=-dx, dy=-dy;
-            while(rt+dx>=0&&ct+dy>=0&&rt+dx<BOARD_SIZE&&ct+dy<BOARD_SIZE&&grid_[rt+dx][ct+dy]==(is_black_turn_?PointState::BLACK:PointState::WHITE)) { count++;rt+=dx,ct+=dy; }
-            if(count==5) { game_over_ = true, is_black_win_ = is_black_turn_; break;}
+        const PointState curr = is_black_turn_ ? PointState::BLACK : PointState::WHITE;
+        const int directions[4][2] = {
+            {1, 0},   // →
+            {0, 1},   // ↓
+            {1, 1},   // ↘
+            {1, -1}   // ↗
+        };
+        for (auto& dir : directions) {
+            int dx = dir[0], dy = dir[1];
+            int count = 1;
+            int x = row + dx, y = col + dy;
+            while (x >= 0 && y >= 0 && x < BOARD_SIZE && y < BOARD_SIZE && grid_[x][y] == curr) {
+                count++;
+                x += dx;
+                y += dy;
+            }
+            x = row - dx;
+            y = col - dy;
+            while (x >= 0 && y >= 0 && x < BOARD_SIZE && y < BOARD_SIZE && grid_[x][y] == curr) {
+                count++;
+                x -= dx;
+                y -= dy;
+            }
+            if (count >= 5) {
+                game_over_ = true;
+                is_black_win_ = is_black_turn_;
+                break;
+            }
         }
+    }
+    
+    void Board::play(int mode) {
+        int row, col;
+        while(!game_over_) {
+            #if defined(_WIN32) || defined(_WIN64)
+                system("cls");
+            #else
+                system("clear");
+            #endif
+            this->print(mode==1);
+            std::cout << "\n轮到: " << (is_black_turn_?"⚫ ":"⚪ ") << "输入落子位置 (row col): ";
+            std::cin >> row >> col;
+            if (!placeStone(row, col)) std::cout << "非法落子，请重试。\n";
+        }
+        #if defined(_WIN32) || defined(_WIN64)
+            system("cls");
+        #else
+            system("clear");
+        #endif
+        this->print(true);
+        std::cout << std::endl << "游戏结束::获胜方::" << (isBlackWin()?"黑方":"白方") << std::endl;
     }
 }

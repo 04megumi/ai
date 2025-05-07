@@ -52,6 +52,11 @@ namespace Common {
          */
         void checkIsGameOver(int row, int col);
 
+        /**
+         * @brief 游玩
+         * @param mode 模式 1->⚫, 2->charB
+         */
+        void play(int mode);
     private:
         std::array<std::array<PointState, BOARD_SIZE>, BOARD_SIZE> grid_; ///< 棋盘数据，二维数组表示每个格点状态
         bool is_black_turn_ = true; ///< 当前是否轮到黑子落子
